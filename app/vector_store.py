@@ -20,21 +20,47 @@ def load_or_create_faiss_index(dim):
         print("FAISS index created.")
     return index
 
-# Generate Embeddings
 def generate_embeddings(text_chunks):
+    if not text_chunks:
+        raise ValueError("No text chunks provided for embedding.")
     embeddings = embedding_model.encode(text_chunks, convert_to_tensor=False)
     return np.array(embeddings)
 
-# Insert embeddings into FAISS
-def insert_into_faiss(index, text_chunks, metadata_list):
-    embeddings = generate_embeddings(text_chunks)
-    metadata = {i: metadata_list[i] for i in range(len(metadata_list))}
-    with open("metadata.json", "w") as f:
-        json.dump(metadata, f)
 
+def insert_into_faiss(index, text_chunks, metadata_list):
+    # Filter out empty chunks
+    valid_chunks = [chunk for chunk in text_chunks if chunk.strip()]
+    if not valid_chunks:
+        print("No valid text chunks for embedding.")
+        return
+
+    embeddings = generate_embeddings(valid_chunks)
+
+    # Check if embeddings are 2D
+    if len(embeddings.shape) != 2:
+        raise ValueError(f"Embeddings should be 2D, but got shape: {embeddings.shape}")
+
+    # Ensure the metadata length matches the number of embeddings
+    valid_metadata = [
+        {"id": i, "text": valid_chunks[i]} for i in range(len(valid_chunks))
+    ]
+    if len(valid_metadata) != len(embeddings):
+        raise ValueError(
+            f"Mismatch between metadata and embeddings: {len(valid_metadata)} metadata items for {len(embeddings)} embeddings."
+        )
+
+    # Save metadata
+    print("Saving Metadata to metadata.json...")
+    with open("E:\\Headway\\Tasks\\genai_chatbot\\app\\metadata.json", "w") as f:
+        json.dump(valid_metadata, f, indent=4)
+    print("Metadata successfully saved!")
+
+    # Insert embeddings into FAISS
+    print(f"Adding {len(embeddings)} embeddings to FAISS index.")
     index.add(embeddings)
     faiss.write_index(index, INDEX_PATH)
     print("Embeddings and metadata inserted into FAISS.")
+
 
 # Search FAISS index
 def search_faiss(query, index, top_k=5):

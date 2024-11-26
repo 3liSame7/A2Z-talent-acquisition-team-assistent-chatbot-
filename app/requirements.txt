@@ -1,8 +1,8 @@
-streamlit==1.23.1
-pymilvus==2.2.10
+streamlit==1.16.0
+PyPDF2==1.26.0
 tika==1.24
-sentence-transformers==2.2.2
-langchain==0.0.208
-huggingface_hub==0.15.1
+langchain==0.0.190
+sentence-transformers==2.2.0
 faiss-cpu==1.7.3
-python-dotenv==1.0.0
+numpy==1.24.0
+openai==0.27.0
