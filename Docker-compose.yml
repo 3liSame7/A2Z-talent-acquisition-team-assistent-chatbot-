@@ -1,0 +1,20 @@
+version: "3.9"
+services:
+  resume_rag:
+    image: resume_rag
+    build:
+      context: .
+    ports:
+      - "8501:8501"
+    volumes:
+      # Mount the models directory to /app/models in the container
+      - ./models:/app/models
+
+      # Mount the FAISS index if needed
+      - ./resume_index:/app/resume_index
+
+      # Mount uploaded resumes for processing
+      - ./uploaded_resumes:/app/uploaded_resumes
+
+      # Optional: Mount metadata if used
+      - ./metadata.json:/app/metadata.json
