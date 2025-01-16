@@ -33,8 +33,8 @@ The Resume RAG system leverages a combination of FAISS indexing and a SentenceTr
 1. Clone this repository:
 
    ```bash
-   git clone <repository_url>
-   cd <repository_name>
+   git clone https://github.com/3liSame7/A2Z-talent-acquisition-team-assistent-chatbot-.git
+   cd <repo_name>
    ```
 
 2. Create a virtual environment and activate it:
